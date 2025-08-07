@@ -156,14 +156,8 @@ public class ReceiptService {
         return receiptRepository.existsByQrRawData(receipt.getQrRawData());
     }
 
-    //TODO dont forget remove Thread.sleep()
     @Cacheable(value = "daily-statistic")
     public DailyStatisticDTO getDailyStatistic() {
-        try {
-            Thread.sleep(1000*3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         List<Top3RatingDTO> maxReceiptsUsers = receiptRepository.findTop3ReceiptsCount();
         DailyStatisticDTO dailyStatisticDTO = new DailyStatisticDTO();
         for (Top3RatingDTO top: maxReceiptsUsers){
