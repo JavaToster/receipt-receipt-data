@@ -1,7 +1,7 @@
 package com.example.receipt_data.util;
 
-import com.example.receipt_data.DTO.ReceiptDTO;
-import com.example.receipt_data.DTO.UserDTO;
+import com.example.receipt_data.DTO.receipt.ReceiptDTO;
+import com.example.receipt_data.DTO.user.UserDTO;
 import com.example.receipt_data.domainModels.User;
 import com.example.receipt_data.models.Receipt;
 import lombok.RequiredArgsConstructor;

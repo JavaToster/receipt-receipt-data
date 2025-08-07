@@ -10,5 +10,4 @@ public class User {
     private long telegramId;
     private String username;
     private String recoveryEmail;
-    private List<Receipt> receipts;
 }

@@ -1,9 +1,8 @@
-package com.example.receipt_data.DTO;
+package com.example.receipt_data.DTO.receipt;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 public class ReceiptDTO {

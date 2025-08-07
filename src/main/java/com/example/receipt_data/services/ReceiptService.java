@@ -1,7 +1,12 @@
 package com.example.receipt_data.services;
 
-import com.example.receipt_data.DTO.ReceiptDTO;
+import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
+import com.example.receipt_data.DTO.receipt.ReceiptDTO;
+import com.example.receipt_data.DTO.statistics.StatisticDTO;
+import com.example.receipt_data.DTO.statistics.Top3RatingDTO;
+import com.example.receipt_data.DTO.user.UserDTO;
 import com.example.receipt_data.QRCodeUtil.QRCodeDecoder;
+import com.example.receipt_data.clients.UserClient;
 import com.example.receipt_data.forExceptions.exceptions.EntityIsExistException;
 import com.example.receipt_data.forExceptions.exceptions.ReadingQRCodeDataException;
 import com.example.receipt_data.models.Receipt;
@@ -10,6 +15,7 @@ import com.example.receipt_data.util.Convertor;
 import com.example.receipt_data.util.Sorter;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +36,7 @@ public class ReceiptService {
     private final QRCodeDecoder qrCodeDecoder;
     private final Convertor convertor;
     private final Sorter sorter;
+    private final UserClient userClient;
 
     public ReceiptDTO decode(MultipartFile file){
         String valueOfQRCode;
@@ -147,6 +154,24 @@ public class ReceiptService {
 
     private boolean isExist(ReceiptDTO receipt){
         return receiptRepository.existsByQrRawData(receipt.getQrRawData());
+    }
+
+    //TODO dont forget remove Thread.sleep()
+    @Cacheable(value = "daily-statistic")
+    public DailyStatisticDTO getDailyStatistic() {
+        try {
+            Thread.sleep(1000*3);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        List<Top3RatingDTO> maxReceiptsUsers = receiptRepository.findTop3ReceiptsCount();
+        DailyStatisticDTO dailyStatisticDTO = new DailyStatisticDTO();
+        for (Top3RatingDTO top: maxReceiptsUsers){
+            UserDTO userDTO = userClient.getUser(top.getOwner_id());
+            StatisticDTO statisticDTO = new StatisticDTO(userDTO.getUsername(), top.getCnt());
+            dailyStatisticDTO.addStatistic(statisticDTO);
+        }
+        return dailyStatisticDTO;
     }
 }
 

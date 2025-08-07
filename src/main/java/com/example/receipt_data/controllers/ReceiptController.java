@@ -1,8 +1,9 @@
 package com.example.receipt_data.controllers;
 
 
-import com.example.receipt_data.DTO.ReceiptDTO;
-import com.example.receipt_data.DTO.ReceiptsDTO;
+import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
+import com.example.receipt_data.DTO.receipt.ReceiptDTO;
+import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
 import com.example.receipt_data.services.ReceiptService;
 import com.example.receipt_data.validators.ReceiptValidator;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,12 @@ public class ReceiptController {
     public ResponseEntity<ReceiptsDTO> getReceiptsByMonth(Principal principal, @PathVariable("month_number") int monthNum){
         List<ReceiptDTO> receipts = receiptService.findByMonth(Long.parseLong(principal.getName()), monthNum);
         return new ResponseEntity<>(new ReceiptsDTO(receipts), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/daily-statistic")
+    public ResponseEntity<DailyStatisticDTO> getDailyStatistic(){
+        DailyStatisticDTO statistic = receiptService.getDailyStatistic();
+
+        return new ResponseEntity<>(statistic, HttpStatus.OK);
     }
 }
