@@ -14,20 +14,28 @@ public class Receipt {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(name = "sum")
     private double sum;
+
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
     @Column(name = "fn")
     private long fn;
+
     @Column(name = "fp")
     private long fp;
+
     @Column(name = "i")
     private long i;
+
     @Column(name = "n")
     private int n;
+
     @Column(name = "qr_raw_data")
     private String qrRawData;
+
     @Column(name = "owner_id")
     private long ownerId;
 

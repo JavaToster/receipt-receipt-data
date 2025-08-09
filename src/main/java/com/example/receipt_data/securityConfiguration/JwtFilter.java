@@ -1,10 +1,9 @@
-package com.example.receipt_data.configuration;
+package com.example.receipt_data.securityConfiguration;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.receipt_data.security.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/receipt")
@@ -30,25 +29,19 @@ public class ReceiptController {
         ReceiptDTO receiptDataDTO = receiptService.decode(file);
         receiptService.save(receiptDataDTO, Long.parseLong(principal.getName()));
 
-        return new ResponseEntity<>(receiptDataDTO, HttpStatus.OK);
+        return ResponseEntity.ok(receiptDataDTO);
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ReceiptDTO> get(@PathVariable("id") long id){
         ReceiptDTO receiptDataDTO = receiptService.get(id);
-        return new ResponseEntity<>(receiptDataDTO, HttpStatus.OK);
+        return ResponseEntity.ok(receiptDataDTO);
     }
 
     @GetMapping("/get")
     public ResponseEntity<ReceiptsDTO> getUserReceipts(Principal principal){
-        List<ReceiptDTO> receipts = receiptService.findByUserTelegramIdAndSortByCreationDate(Long.parseLong(principal.getName()));
-        return new ResponseEntity<>(new ReceiptsDTO(receipts), HttpStatus.OK);
-    }
-
-    @GetMapping("/get/month/{month_number}")
-    public ResponseEntity<ReceiptsDTO> getReceiptsByMonth(Principal principal, @PathVariable("month_number") int monthNum){
-        List<ReceiptDTO> receipts = receiptService.findByMonth(Long.parseLong(principal.getName()), monthNum);
-        return new ResponseEntity<>(new ReceiptsDTO(receipts), HttpStatus.OK);
+        ReceiptsDTO receipts = receiptService.findByUserTelegramIdAndSortByCreationDate(Long.parseLong(principal.getName()));
+        return ResponseEntity.ok(receipts);
     }
 
     @GetMapping("/get/daily-statistic")

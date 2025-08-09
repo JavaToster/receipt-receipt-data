@@ -1,6 +1,7 @@
-package com.example.receipt_data.configuration;
+package com.example.receipt_data.feignConfiguration;
 
-import com.example.receipt_data.configuration.interceptors.JwtTokenInterceptor;
+import com.example.receipt_data.securityConfiguration.interceptors.JwtTokenInterceptor;
+import com.example.receipt_data.util.FeignErrorDecoder;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;
 import org.springframework.cloud.openfeign.EnableFeignClients;

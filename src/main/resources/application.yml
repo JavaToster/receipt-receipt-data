@@ -3,9 +3,9 @@ spring:
     name: receipt-data
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ****
-    username: ****
-    password: ****
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     properties:
       hibernate:
@@ -17,14 +17,18 @@ mvc:
       filter:
         enabled: true
 server:
-  port: 8081
+  port: ${SERVER_PORT}
 security:
   jwt:
-    secret: ****
+    secret: ${SECURITY_JWT}
 servlet:
   multipart:
     max-file-size: 10MB
     max-request-size: 10MB
 receipt:
   check:
-    url: "https://proverkacheka.com/user/34330/309735"
+    url: ${RECEIPT_CHECK_URL}
+
+clients:
+  user:
+    url: ${CLIENTS_USER}

@@ -1,16 +1,15 @@
 package com.example.receipt_data.DTO.statistics;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DailyStatisticDTO {
-    private final List<StatisticDTO> statistic = new ArrayList<>();
-
-    public void addStatistic(StatisticDTO statisticDTO){
-        this.statistic.add(statisticDTO);
-    }
-
+    private List<StatisticDTO> statistic;
 }

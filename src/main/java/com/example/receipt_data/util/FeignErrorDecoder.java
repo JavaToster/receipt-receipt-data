@@ -1,4 +1,4 @@
-package com.example.receipt_data.configuration;
+package com.example.receipt_data.util;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;

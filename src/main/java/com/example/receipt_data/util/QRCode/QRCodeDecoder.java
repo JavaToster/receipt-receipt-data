@@ -1,4 +1,4 @@
-package com.example.receipt_data.QRCodeUtil;
+package com.example.receipt_data.util.QRCode;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.*;
@@ -54,25 +54,20 @@ public class QRCodeDecoder {
         try {
             BufferedImage processed = original;
 
-            // Постепенное добавление операций в зависимости от попытки
             processed = convertToGrayscale(processed);
-
+            // накопительно заходим во все if для проверки
             if (attempt > 1) {
                 processed = enhanceContrast(processed);
             }
-
             if (attempt > 2) {
                 processed = applyDenoising(processed);
             }
-
             if (attempt > 3) {
                 processed = sharpenImage(processed);
             }
-
             if (attempt > 4) {
                 processed = scaleImage(processed, 1.5);
             }
-
             return decodeQRCode(processed);
         } catch (Exception e) {
             return null;

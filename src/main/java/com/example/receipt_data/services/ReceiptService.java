@@ -1,11 +1,11 @@
 package com.example.receipt_data.services;
 
+import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
 import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
 import com.example.receipt_data.DTO.statistics.StatisticDTO;
-import com.example.receipt_data.DTO.statistics.Top3RatingDTO;
 import com.example.receipt_data.DTO.user.UserDTO;
-import com.example.receipt_data.QRCodeUtil.QRCodeDecoder;
+import com.example.receipt_data.util.QRCode.QRCodeDecoder;
 import com.example.receipt_data.clients.UserClient;
 import com.example.receipt_data.forExceptions.exceptions.EntityIsExistException;
 import com.example.receipt_data.forExceptions.exceptions.ReadingQRCodeDataException;
@@ -136,10 +136,10 @@ public class ReceiptService {
         return convertor.convertToReceiptDTO(receipt);
     }
 
-    public List<ReceiptDTO> findByUserTelegramIdAndSortByCreationDate(long telegramId){
+    public ReceiptsDTO findByUserTelegramIdAndSortByCreationDate(long telegramId){
         List<Receipt> receipts = receiptRepository.findAllByOwnerId(telegramId);
         List<Receipt> sortedReceiptsByCreationDate = sorter.sortByCreationDate(receipts);
-        return convertor.convertToReceiptDTO(sortedReceiptsByCreationDate);
+        return new ReceiptsDTO(convertor.convertToReceiptDTO(sortedReceiptsByCreationDate));
     }
 
     public List<ReceiptDTO> findByMonth(long telegramId, int month) {
@@ -158,14 +158,12 @@ public class ReceiptService {
 
     @Cacheable(value = "daily-statistic")
     public DailyStatisticDTO getDailyStatistic() {
-        List<Top3RatingDTO> maxReceiptsUsers = receiptRepository.findTop3ReceiptsCount();
-        DailyStatisticDTO dailyStatisticDTO = new DailyStatisticDTO();
-        for (Top3RatingDTO top: maxReceiptsUsers){
-            UserDTO userDTO = userClient.getUser(top.getOwner_id());
-            StatisticDTO statisticDTO = new StatisticDTO(userDTO.getUsername(), top.getCnt());
-            dailyStatisticDTO.addStatistic(statisticDTO);
-        }
-        return dailyStatisticDTO;
+        List<StatisticDTO> statisticDTOList = receiptRepository.findTop3UserIdAndReceiptCount().stream()
+                .map(statistic -> {
+                    UserDTO u = userClient.getUser(statistic.getOwner_id());
+                    return new StatisticDTO(u.getUsername(), statistic.getCnt());
+                }).toList();
+        return new DailyStatisticDTO(statisticDTOList);
     }
 }
 

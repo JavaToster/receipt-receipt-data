@@ -16,9 +16,9 @@ public class ReceiptValidator {
         String contentType = file.getContentType();
         return contentType != null && (
                 contentType.equals("image/jpeg") ||
-                        contentType.equals("image/png") ||
-                        contentType.equals("image/gif") ||
-                        contentType.equals("image/jpg")
+                contentType.equals("image/png") ||
+                contentType.equals("image/gif") ||
+                contentType.equals("image/jpg")
         );
     }
 }

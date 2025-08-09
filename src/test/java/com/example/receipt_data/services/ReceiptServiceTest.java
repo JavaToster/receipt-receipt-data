@@ -1,7 +1,8 @@
 package com.example.receipt_data.services;
 
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
-import com.example.receipt_data.QRCodeUtil.QRCodeDecoder;
+import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
+import com.example.receipt_data.util.QRCode.QRCodeDecoder;
 import com.example.receipt_data.forExceptions.exceptions.EntityIsExistException;
 import com.example.receipt_data.models.Receipt;
 import com.example.receipt_data.repositories.ReceiptRepository;
@@ -124,12 +125,12 @@ class ReceiptServiceTest {
         when(convertor.convertToReceiptDTO(sortedReceipts)).thenReturn(expectedDTOs);
 
         // when
-        List<ReceiptDTO> actualDTOs = receiptService.findByUserTelegramIdAndSortByCreationDate(TELEGRAM_ID);
+        ReceiptsDTO actual = receiptService.findByUserTelegramIdAndSortByCreationDate(TELEGRAM_ID);
 
         // then
-        assertEquals(2, actualDTOs.size());
-        assertEquals(1L, actualDTOs.get(0).getId());
-        assertEquals(2L, actualDTOs.get(1).getId());
+        assertEquals(2, actual.getReceipts().size());
+        assertEquals(1L, actual.getReceipts().get(0).getId());
+        assertEquals(2L, actual.getReceipts().get(1).getId());
 
         verify(receiptRepository).findAllByOwnerId(TELEGRAM_ID);
         verify(sorter).sortByCreationDate(unsortedReceipts);

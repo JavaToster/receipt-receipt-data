@@ -1,4 +1,4 @@
-package com.example.receipt_data.configuration.interceptors;
+package com.example.receipt_data.securityConfiguration.interceptors;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
