@@ -4,6 +4,7 @@ import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
 import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
 import com.example.receipt_data.DTO.statistics.StatisticDTO;
+import com.example.receipt_data.DTO.statistics.Top3RatingDTO;
 import com.example.receipt_data.DTO.user.UserDTO;
 import com.example.receipt_data.util.QRCode.QRCodeDecoder;
 import com.example.receipt_data.clients.UserClient;
@@ -24,7 +25,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,63 +68,61 @@ public class ReceiptService {
 
     //    t=20250630T1702&s=1057.00&fn=7380440801524581&i=659&fp=1350420190&n=1
     private ReceiptDTO decodeQRCodeData(String query) {
-        LocalDateTime time = null;
-        double sumOfReceipt = 0;
-        String fn = "";
-        String i = "";
-        String fp = "";
-        int n = 0;
-        if (query == null || query.isEmpty()) {
-            throw new NullPointerException();
-        }
-
-        int start = 0;
-        int length = query.length();
-
-        while (start < length) {
-            // Находим конец пары
-            int end = query.indexOf('&', start);
-            if (end == -1) end = length;
-
-            // Ищем разделитель ключа и значения
-            int separator = query.indexOf('=', start);
-            if (separator > end || separator == -1) {
-                // Пара без значения
-                continue;
-            } else {
-                // Извлекаем ключ и значение
-                String key = query.substring(start, separator);
-                String value = query.substring(separator+1, end);
-                if (key.equals("s")) {
-                    sumOfReceipt = Double.parseDouble(value);
-                }else if(key.equals("t")) {
-                    try {
-                        time = parseDateTime(value);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }else if(key.equals("fn")){
-                    fn = value;
-                }else if(key.equals("fp")){
-                    fp = value;
-                }else if(key.equals("i")){
-                    i = value;
-                }else if(key.equals("n")){
-                    n = Integer.parseInt(value);
-                }
-                start = end + 1; // Переход к следующей паре
-            }
-        }
         ReceiptDTO receipt = new ReceiptDTO();
-        receipt.setSum(sumOfReceipt);
-        receipt.setFp(fp);
-        receipt.setFn(fn);
-        receipt.setI(i);
-        receipt.setCreationDate(time);
-        receipt.setN(n);
-        receipt.setQrRawData(query);
+        List<String> pairs = splitQueryIntoPairs(query);
+
+        for (String pair : pairs) {
+            processKeyValuePair(pair, receipt);
+        }
+
         return receipt;
     }
+
+    private List<String> splitQueryIntoPairs(String query) {
+        return Arrays.asList(query.split("&"));
+    }
+
+    private void processKeyValuePair(String pair, ReceiptDTO receipt) {
+        int separator = pair.indexOf('=');
+        if (separator == -1) return;
+
+        String key = pair.substring(0, separator);
+        String value = pair.substring(separator + 1);
+
+        switch (key) {
+            case "s" -> receipt.setSum(parseDouble(value));
+            case "t" -> receipt.setCreationDate(parseDate(value));
+            case "fn" -> receipt.setFn(value);
+            case "fp" -> receipt.setFp(value);
+            case "i" -> receipt.setI(value);
+            case "n" -> receipt.setN(parseInt(value));
+        }
+    }
+
+    private Double parseDouble(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new ReadingQRCodeDataException("Could not parse parse Double");
+        }
+    }
+
+    private LocalDateTime parseDate(String value) {
+        try {
+            return parseDateTime(value); // предположим, что этот метод уже есть
+        } catch (Exception e) {
+            throw new ReadingQRCodeDataException("Could not parse parse time");
+        }
+    }
+
+    private Integer parseInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ReadingQRCodeDataException("Could not parse parse Integer");
+        }
+    }
+
 
     private LocalDateTime parseDateTime(String time) {
         LocalDateTime creationTime;
@@ -158,12 +161,28 @@ public class ReceiptService {
 
     @Cacheable(value = "daily-statistic")
     public DailyStatisticDTO getDailyStatistic() {
-        List<StatisticDTO> statisticDTOList = receiptRepository.findTop3UserIdAndReceiptCount().stream()
-                .map(statistic -> {
-                    UserDTO u = userClient.getUser(statistic.getOwner_id());
-                    return new StatisticDTO(u.getUsername(), statistic.getCnt());
-                }).toList();
-        return new DailyStatisticDTO(statisticDTOList);
+        List<Top3RatingDTO> rating = receiptRepository.findTop3UserIdAndReceiptCount();
+
+        List<Long> ids = getIdsFromTop3Rating(rating);
+
+        List<UserDTO> users = userClient.getSeveralUsers(ids);
+
+        Map<Long, UserDTO> mapOfUsers = users.stream()
+                .collect(Collectors.toMap(UserDTO::getTelegramId, u -> u));
+
+        List<StatisticDTO> statistic = rating.stream()
+                .map(top -> {
+                    UserDTO u = mapOfUsers.get(top.getOwner_id());
+                    return new StatisticDTO(u.getUsername(), top.getCnt());
+                })
+                .toList();
+
+        return new DailyStatisticDTO(statistic);
+    }
+
+    private List<Long> getIdsFromTop3Rating(List<Top3RatingDTO> top){
+        return top.stream()
+                .map(Top3RatingDTO::getOwner_id).toList();
     }
 }
 
