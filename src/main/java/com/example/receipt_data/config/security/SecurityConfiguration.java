@@ -1,4 +1,4 @@
-package com.example.receipt_data.securityConfiguration;
+package com.example.receipt_data.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

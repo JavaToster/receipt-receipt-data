@@ -1,4 +1,4 @@
-package com.example.receipt_data.redisConfiguration;
+package com.example.receipt_data.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;

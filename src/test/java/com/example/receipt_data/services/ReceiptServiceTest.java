@@ -2,8 +2,8 @@ package com.example.receipt_data.services;
 
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
+import com.example.receipt_data.exceptions.EntityIsExistException;
 import com.example.receipt_data.util.QRCode.QRCodeDecoder;
-import com.example.receipt_data.forExceptions.exceptions.EntityIsExistException;
 import com.example.receipt_data.models.Receipt;
 import com.example.receipt_data.repositories.ReceiptRepository;
 import com.example.receipt_data.util.Convertor;

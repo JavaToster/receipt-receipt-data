@@ -1,7 +1,8 @@
 package com.example.receipt_data.clients;
 
 import com.example.receipt_data.DTO.user.UserDTO;
-import com.example.receipt_data.feignConfiguration.UserClientFeignConfiguration;
+import com.example.receipt_data.config.feign.UserClientFeignConfiguration;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,4 +1,4 @@
-package com.example.receipt_data.generalConfiguration;
+package com.example.receipt_data.config.general;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

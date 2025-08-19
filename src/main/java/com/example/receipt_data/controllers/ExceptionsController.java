@@ -1,8 +1,9 @@
 package com.example.receipt_data.controllers;
 
 import com.example.receipt_data.DTO.ErrorMessageDTO;
-import com.example.receipt_data.forExceptions.exceptions.EntityIsExistException;
-import com.example.receipt_data.forExceptions.exceptions.ReadingQRCodeDataException;
+import com.example.receipt_data.exceptions.EntityIsExistException;
+import com.example.receipt_data.exceptions.ReadingQRCodeDataException;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;

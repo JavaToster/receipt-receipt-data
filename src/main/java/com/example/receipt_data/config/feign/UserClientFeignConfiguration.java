@@ -1,6 +1,6 @@
-package com.example.receipt_data.feignConfiguration;
+package com.example.receipt_data.config.feign;
 
-import com.example.receipt_data.securityConfiguration.interceptors.JwtTokenInterceptor;
+import com.example.receipt_data.config.security.interceptors.JwtTokenInterceptor;
 import com.example.receipt_data.util.FeignErrorDecoder;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;

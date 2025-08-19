@@ -1,4 +1,4 @@
-package com.example.receipt_data.securityConfiguration;
+package com.example.receipt_data.config.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.receipt_data.security.JwtUtil;
