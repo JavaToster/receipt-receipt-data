@@ -27,4 +27,6 @@ public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
             nativeQuery = true
     )
     List<Top3RatingDTO> findTop3UserIdAndReceiptCount();
+
+    long countByOwnerId(long ownerId);
 }

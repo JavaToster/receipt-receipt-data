@@ -1,11 +1,13 @@
 package com.example.receipt_data.services;
 
 import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
+import com.example.receipt_data.DTO.reports.ReportOfUserDTO;
 import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
 import com.example.receipt_data.DTO.statistics.StatisticDTO;
 import com.example.receipt_data.DTO.statistics.Top3RatingDTO;
 import com.example.receipt_data.DTO.user.UserDTO;
+import com.example.receipt_data.clients.EmailClient;
 import com.example.receipt_data.util.QRCode.QRCodeDecoder;
 import com.example.receipt_data.clients.UserClient;
 import com.example.receipt_data.exceptions.EntityIsExistException;
@@ -41,6 +43,7 @@ public class ReceiptService {
     private final Convertor convertor;
     private final Sorter sorter;
     private final UserClient userClient;
+    private final EmailClient emailClient;
 
     public ReceiptDTO decode(MultipartFile file){
         String valueOfQRCode;
@@ -182,6 +185,16 @@ public class ReceiptService {
     private List<Long> getIdsFromTop3Rating(List<Top3RatingDTO> top){
         return top.stream()
                 .map(Top3RatingDTO::getOwner_id).toList();
+    }
+
+    public void sendReport(long userId){
+        ReportOfUserDTO reportOfUserDTO = new ReportOfUserDTO();
+        UserDTO userDTO = userClient.getUser(userId);
+        reportOfUserDTO.setUserDTO(userDTO);
+        long count = receiptRepository.countByOwnerId(userId);
+        reportOfUserDTO.setReceiptsCount(count);
+
+        emailClient.sendReport(reportOfUserDTO);
     }
 }
 

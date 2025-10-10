@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableFeignClients(basePackages = "com.example.receipt_data.clients")
-public class UserClientFeignConfiguration {
+public class ClientsFeignConfiguration {
     @Bean
     public ErrorDecoder errorDecoder(){
         return new FeignErrorDecoder();

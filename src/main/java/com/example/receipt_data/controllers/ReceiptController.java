@@ -1,6 +1,5 @@
 package com.example.receipt_data.controllers;
 
-
 import com.example.receipt_data.DTO.statistics.DailyStatisticDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptDTO;
 import com.example.receipt_data.DTO.receipt.ReceiptsDTO;
@@ -49,5 +48,12 @@ public class ReceiptController {
         DailyStatisticDTO statistic = receiptService.getDailyStatistic();
 
         return new ResponseEntity<>(statistic, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/report_of_user")
+    public ResponseEntity<Void> getUserReport(Principal principal){
+        long userId = Long.parseLong(principal.getName());
+        receiptService.sendReport(userId);
+        return ResponseEntity.ok().build();
     }
 }

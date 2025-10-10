@@ -41,3 +41,5 @@ receipt:
 clients:
   user:
     url: ${CLIENTS_USER}
+  email:
+    url: ${CLIENTS_EMAIL}
