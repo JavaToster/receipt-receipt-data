@@ -47,7 +47,7 @@ public class ReceiptController {
     public ResponseEntity<DailyStatisticDTO> getDailyStatistic(){
         DailyStatisticDTO statistic = receiptService.getDailyStatistic();
 
-        return new ResponseEntity<>(statistic, HttpStatus.OK);
+        return ResponseEntity.ok(statistic);
     }
 
     @GetMapping("/get/report_of_user")
