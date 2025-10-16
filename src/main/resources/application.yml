@@ -43,3 +43,5 @@ clients:
     url: ${CLIENTS_USER}
   email:
     url: ${CLIENTS_EMAIL}
+  headers:
+    key: ${CLIENTS_header_key}
